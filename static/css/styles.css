@@ -1,0 +1,43 @@
+body {
+    padding-top: 56px;
+}
+
+.card.result-card {
+    border: none;
+}
+
+.card.result-card a, .card.result-card a:hover {
+    text-decoration: none;
+}
+
+.card.result-card .card-body {
+    padding: 10px;
+}
+
+.card.result-card .card-body .card-title > a {
+    color: rgb(13, 13, 13);
+}
+
+.card.result-card .card-body p a {
+    color: rgb(96, 96, 96);
+}
+
+.card.result-card .card-body p {
+    color: rgb(96, 96, 96);
+}
+
+.card-horizontal {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+/* Hiding default errors of Django form */
+ul.errorlist {display:none;}
+
+.flash-message {
+    position: absolute;
+    margin: 0;
+    bottom: 50px;
+    left: 25px;
+    z-index: 10;
+}

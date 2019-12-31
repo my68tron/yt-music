@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Download Songs from Youtube as mp3">
+  <meta name="author" content="my68tron">
+
+  <title>YT-Search</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+</head>
+
+<body class="bg-dark">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'index' %}">YT Song Downloader</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'index' %}">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'download_page' %}">Download</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'search:contact' %}">Contact</a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="/form">FormPage</a>
+          </li> -->
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="container">
+
+    <div class="row">
+
+      <!-- Main Content -->
+      <div class="col-md-8">
+            
+        {% block body_block %}
+          
+        {% endblock body_block %}
+        
+      </div>
+    
+      <!-- Sidebar Widgets Column -->
+      <div class="col-md-4">
+        {% block sidebar %}
+          {% if not sidebar_search %}
+          <!-- Side Youtube Search Widget -->
+          <div class="card my-4">
+            <h5 class="card-header">Youtube Search</h5>
+            <div class="card-body">
+              <form action="{% url 'search:index' %}" method='POST'>
+                
+                {% csrf_token %}
+
+                <div class="form-row align-items-center">
+                  <div class="col-12">
+                    <input type="text" name="search-input" class="form-control mb-2" placeholder="Search" value="{% firstof search_input %}" required autofocus>
+                  </div>
+                  <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mb-2">Submit</button>
+                  </div>
+                </div>
+      
+              </form>
+            </div>
+          </div>
+
+          {% endif %}
+        {% endblock sidebar %}
+    
+        <!-- Side How to Use Widget -->
+        <div class="card my-4">
+          <h5 class="card-header">How to use</h5>
+          <div class="card-body">
+            > Search for your song<br>
+            > Click on the image of desired result to download it<br>
+            > Click on title to view on Youtube<br>
+            > Click on channel name to go to Channel Page on Youtube<br>
+            > Wait for the server to process request and download will automatically start
+          </div>
+        </div>
+    
+        <div class="card my-4">
+          <h5 class="card-header">Previous 10 Searches</h5>
+          <div class="card-body">
+            {% if search_list %}
+              {% for entry in search_list %}
+                {{ entry.search_title }}<br>
+              {% endfor %}
+            {% else %}
+              <p>No PREVIOUS SEARCHES found</p>
+            {% endif %}
+          </div>
+        </div>
+    
+      </div>
+    
+    </div>
+    <!-- /.row -->
+
+  </div>
+  <!-- /.container -->
+
+  <!-- Footer -->
+  <!-- <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; YT-MUSIC 2019</p>
+    </div>
+  </footer> -->
+
+  <!-- Error Message popup -->
+  <!-- {% if error_messages %}
+    {% for msg in error_messages %}
+      <div class="alert alert-danger alert-dismissable fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{msg}}
+      </div>
+    {% endfor %}
+  {% endif %} -->
+
+  <!-- Info Message popup -->
+  <!-- {% if info_messages %}
+    {% for msg in info_messages %}
+      <div class="alert alert-info alert-dismissable fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" aria-hidden="true">&times;</button>
+        {{msg}}
+      </div>
+    {% endfor %}
+  {% endif %} -->
+
+  <!-- Flash Message -->
+  {% if flash_message %}
+    <div class="flash-message alert alert-{{ flash_message.css_type }} alert-dismissable fade show" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" aria-hidden="true">&times;</button>
+      {{flash_message.message}}
+    </div>
+  {% endif %}
+
+  <!-- Bootstrap core JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+  <!-- Custom scripst for this template -->
+  <script src="{% static 'js/script.js' %}"></script>
+
+</body>
+
+</html>

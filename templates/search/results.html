@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block body_block %}  
+
+<div class="card my-4">
+    <h2 class="card-header">Search Results for '{{ search_input }}'</h2>
+</div>
+
+{% if search_results %}
+    {% for entry in search_results %}
+        <div class="card my-4 result-card">
+            <div class="card-horizontal">
+                <div class="img-square-wrapper">
+                    <a href="{% url 'search:download' entry.link|cut:'/watch?v=' %}">
+                        <img class="" src="{{ entry.img }}" alt="{{ entry.title }}">
+                    </a>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a target="_blank" href="youtube.com{{ entry.link }}">{{ entry.title }}</a>
+                    </h5>
+                    <p class="card-text">
+                        <a target="_blank" href="youtube.com{{ entry.channel_link }}">{{ entry.channel_name }}</a>
+                    </p>
+                    <p class="card-text">
+                        {{ entry.duration }}
+                    </p>
+                </div>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">Uploaded {{ entry.uploaded }} | {{ entry.views}}</small>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% endblock body_block %}

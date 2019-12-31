@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block body_block %}  
+
+<!-- <h1 class="my-4">Page Heading
+  <small>Secondary Text</small>
+</h1> -->
+
+<!-- Search Widget -->
+<div class="card my-4">
+  <h5 class="card-header">Youtube Song Download</h5>
+  <div class="card-body">
+    <form method='POST'>
+      
+      {% csrf_token %}
+
+      <div class="form-row align-items-center">
+        <div class="col-10">
+          <input type="text" name="download_url" class="form-control mb-2" placeholder="Enter URL" value="" required autofocus>
+        </div>
+        <div class="col-2">
+          <button type="submit" class="btn btn-primary mb-2">Download</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- Side Widget -->
+<div class="card my-4">
+  <h5 class="card-header">About</h5>
+  <div class="card-body">
+    Just paste the url of the song you want to download.<br><br>
+    Wait for the server to process your request.<br><br>
+    Download will automatically start once ready.
+  </div>
+</div>
+
+<div class="alert alert-danger">
+    <strong>As this is free service, download is limited to songs with length less than 10 min. to avoid overuse of resources</strong>
+</div>
+
+<div class="alert alert-info">
+    For any queries <strong><a href="{% url 'search:contact' %}" class="">Contact Us</a></strong>
+</div>
+
+{% endblock body_block %}

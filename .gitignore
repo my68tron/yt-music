@@ -1,0 +1,11 @@
+yt_website_venv
+.vscode
+
+# Django
+*.sqlite3
+media/
+*.log
+*.pyc
+*.pot
+__pycache__/
+settings.py
