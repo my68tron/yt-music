@@ -142,4 +142,5 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = MEDIA_DIR
 
+# For debug-toolbar
 INTERNAL_IPS = ['127.0.0.1']
