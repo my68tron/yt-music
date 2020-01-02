@@ -1,5 +1,5 @@
 import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'yt_website.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'yt_music.settings')
 
 import django
 django.setup()

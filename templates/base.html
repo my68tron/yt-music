@@ -35,7 +35,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'download_page' %}">Download</a>
+            <a class="nav-link" href="{% url 'download:download_page' %}">Download</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'search:contact' %}">Contact</a>
@@ -70,16 +70,14 @@
           <div class="card my-4">
             <h5 class="card-header">Youtube Search</h5>
             <div class="card-body">
-              <form action="{% url 'search:index' %}" method='POST'>
-                
-                {% csrf_token %}
+              <form action="{% url 'search:index' %}" method='GET'>
 
                 <div class="form-row align-items-center">
                   <div class="col-12">
-                    <input type="text" name="search-input" class="form-control mb-2" placeholder="Search" value="{% firstof search_input %}" required autofocus>
+                    <input type="text" name="search" class="form-control mb-2" placeholder="Search" value="{% firstof search_input %}" required>
                   </div>
                   <div class="col-auto">
-                    <button type="submit" class="btn btn-primary mb-2">Submit</button>
+                    <button type="submit" class="btn btn-primary mb-2">Search</button>
                   </div>
                 </div>
       
@@ -107,7 +105,7 @@
           <div class="card-body">
             {% if search_list %}
               {% for entry in search_list %}
-                {{ entry.search_title }}<br>
+              <a class="" href="{% url 'search:index' %}?query={{ entry.title }}">{{ entry.title }}</a>
               {% endfor %}
             {% else %}
               <p>No PREVIOUS SEARCHES found</p>

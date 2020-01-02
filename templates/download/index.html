@@ -3,23 +3,19 @@
 
 {% block body_block %}  
 
-<!-- <h1 class="my-4">Page Heading
-  <small>Secondary Text</small>
-</h1> -->
-
-<!-- Search Widget -->
+<!-- Youtube Download Form -->
 <div class="card my-4">
-  <h5 class="card-header">Youtube Song Download</h5>
+  <h4 class="card-header">Youtube Song Download</h4>
   <div class="card-body">
-    <form method='POST'>
+    <form action="{% url 'download:download_page' %}" method='POST'>
       
       {% csrf_token %}
 
       <div class="form-row align-items-center">
-        <div class="col-10">
-          <input type="text" name="download_url" class="form-control mb-2" placeholder="Enter URL" value="" required autofocus>
+        <div class="col-md-10">
+          <input type="text" name="download_url" class="form-control mb-2" placeholder="Enter URL" value="{% firstof download_url %}" required autofocus>
         </div>
-        <div class="col-2">
+        <div class="col-auto">
           <button type="submit" class="btn btn-primary mb-2">Download</button>
         </div>
       </div>
@@ -28,7 +24,7 @@
   </div>
 </div>
 
-<!-- Side Widget -->
+<!-- About -->
 <div class="card my-4">
   <h5 class="card-header">About</h5>
   <div class="card-body">

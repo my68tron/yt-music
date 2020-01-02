@@ -7,23 +7,20 @@
 <div class="card my-4">
   <h4 class="card-header">Youtube Search</h4>
   <div class="card-body">
-    <form action="{% url 'search:index' %}" method='POST'>
-      
-      {% csrf_token %}
+    <form action="{% url 'search:index' %}" method='GET'>
 
       <div class="form-row align-items-center">
         <div class="col-10">
-          <input type="text" name="search-input" class="form-control mb-2" placeholder="Search" value="{% firstof search_input %}" required autofocus>
+          <input type="text" name="search" class="form-control mb-2" placeholder="Search" value="{% firstof search_input %}" required autofocus>
         </div>
         <div class="col-2">
-          <button type="submit" class="btn btn-primary mb-2">Submit</button>
+          <button type="submit" class="btn btn-primary mb-2">Search</button>
         </div>
       </div>
 
     </form>
   </div>
 </div>
-
 
 <!-- About -->
 <div class="card my-4">
@@ -42,7 +39,6 @@
 </div>
 
 {% endblock body_block %}
-
 
 {% block sidebar %}
   {% with sidebar_search=True %}

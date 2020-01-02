@@ -15,9 +15,9 @@ BASE_URL = 'https://youtube.com/'
 SEARCH_RESULT_PAGE = 'results?search_query='
 
 def yt_scrape_bs(search_text ='lollipop onderkoffer'):
-    search_text = urllib.parse.quote_plus(search_text, safe='')
+    query = urllib.parse.quote_plus(search_text, safe='')
 
-    r = requests.get(BASE_URL + SEARCH_RESULT_PAGE + search_text)
+    r = requests.get(BASE_URL + SEARCH_RESULT_PAGE + query)
     soup = BeautifulSoup(r.content, 'html5lib')
 
     import os
@@ -28,7 +28,7 @@ def yt_scrape_bs(search_text ='lollipop onderkoffer'):
     video_tiles = soup.findAll('div', attrs={'class':'yt-lockup yt-lockup-tile yt-lockup-video vve-check clearfix'})
     scraped_links = []
     tile_id = 1
-    for video_tile in video_tiles:
+    for video_tile in video_tiles[:10]:
         scraped_content = {}
         scraped_content['id'] = tile_id
         tile_id += 1
@@ -37,30 +37,40 @@ def yt_scrape_bs(search_text ='lollipop onderkoffer'):
         
         img = video_thumbnail.find('img')
         duration = video_thumbnail.find('span', attrs={'class': 'video-time'})
-        scraped_content['img'] = img['src'] if 'https://i.ytimg.com' in img['src'] else img['data-thumb']
+        scraped_content['img_url'] = img['src'] if 'https://i.ytimg.com' in img['src'] else img['data-thumb']
         scraped_content['duration'] = duration.get_text()
 
         content = video_tile.find('div', attrs={'class': 'yt-lockup-content'})
 
         title = content.find('h3', attrs={'class': 'yt-lockup-title'})
         title = title.find('a')
-        scraped_content['link'] = title['href']
-        scraped_content['title'] = title.get_text()
+        scraped_content['url'] = title['href']
+        scraped_content['name'] = title.get_text()
 
         channel_info = content.find('div', attrs={'class': 'yt-lockup-byline'})
         channel_info = channel_info.find('a', attrs={'class': 'yt-uix-sessionlink spf-link'})
-        scraped_content['channel_link'] = channel_info['href']
+        scraped_content['channel_url'] = channel_info['href']
         scraped_content['channel_name'] = channel_info.get_text()
 
         meta = content.find('div', attrs={'class': 'yt-lockup-meta'})
         meta_info = content.find('ul', attrs={'class': 'yt-lockup-meta-info'})
         meta_info = meta_info.find_all('li')
         scraped_content['uploaded'] = meta_info[0].get_text()
-        scraped_content['views'] = meta_info[1].get_text() if len(meta_info > 1) else ' '
+        scraped_content['views'] = meta_info[1].get_text() if len(meta_info) > 1 else '-'
       
         scraped_links.append(scraped_content)
 
-    return scraped_links
+    search_input = search_text
+    # check if spelling is corrected by Youtube
+    spell_check = soup.find('a', attrs={'class': 'spell-correction-corrected-query'})
+    if spell_check:
+        spell_check = spell_check['href'].replace('/results?search_query=', '')
+        spell_check = urllib.parse.unquote(spell_check)
+        search_input = ' '.join(spell_check.split('+'))
+
+    result = {'scraped_links': scraped_links, 'search_input': search_input}
+
+    return result
 
 ##* Used for Selenium Scraping
 #* Scraping using selenium is easy to do and for data collecting for AI projects
@@ -85,7 +95,7 @@ def yt_scrape_sel(search_text = 'lollipop onderkoffer'):
         data = meta.find_element_by_id('video-title')
         scraped_content['title'] = data.get_attribute('title')
         scraped_content['aria-label'] = data.get_attribute('aria-label')
-        scraped_content['link'] = data.get_attribute('href')
+        scraped_content['url'] = data.get_attribute('href')
 
         channel_info = metadata.find_element_by_id('text')
         channel_info = channel_info.find_element_by_tag_name('a')
@@ -97,7 +107,7 @@ def yt_scrape_sel(search_text = 'lollipop onderkoffer'):
         scraped_content['view_count'] = video_views[0].text
         scraped_content['video_uploaded'] = video_views[1].text
 
-        #TODO Extract thumbnail as id to image and duration
+        #TODO Extract thumbnail as id for image and duration
         
         # print(count , " | ", scraped_content['title'], " | ", channel_info.text, " | ", scraped_content['view_count'], " | ", scraped_content['video_uploaded'])
         count += 1

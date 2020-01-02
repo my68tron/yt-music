@@ -1,4 +1,4 @@
-"""yt_website URL Configuration
+"""yt_music URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -23,8 +23,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('download', views.download_page, name='download_page'),
     path('search/', include('search.urls')),
+    path('download/', include('download.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

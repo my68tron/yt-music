@@ -12,16 +12,16 @@
         <div class="card my-4 result-card">
             <div class="card-horizontal">
                 <div class="img-square-wrapper">
-                    <a href="{% url 'search:download' entry.link|cut:'/watch?v=' %}">
-                        <img class="" src="{{ entry.img }}" alt="{{ entry.title }}">
+                    <a href="{% url 'download:download_url' entry.url|cut:'/watch?v=' %}">
+                        <img class="" src="{{ entry.img_url }}" alt="{{ entry.name }}">
                     </a>
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">
-                        <a target="_blank" href="https://youtube.com{{ entry.link }}">{{ entry.title }}</a>
+                        <a target="_blank" href="https://www.youtube.com{{ entry.link }}">{{ entry.name }}</a>
                     </h5>
                     <p class="card-text">
-                        <a target="_blank" href="https://youtube.com{{ entry.channel_link }}">{{ entry.channel_name }}</a>
+                        <a target="_blank" href="https://www.youtube.com{{ entry.channel_url }}">{{ entry.channel_name }}</a>
                     </p>
                     <p class="card-text">
                         {{ entry.duration }}
