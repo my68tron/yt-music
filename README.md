@@ -12,7 +12,10 @@ Setup your virtual environment and install packages required
 
 Migrate models of each app
 
-`python manage.py migrate`
+```python
+python manage.py makemigrations search
+python manage.py migrate
+```
 
 Create super user for admin page
 
