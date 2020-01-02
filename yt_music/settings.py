@@ -142,5 +142,5 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = MEDIA_DIR
 
-# For debug-toolbar
+# For debug-toolbar so that users don't see it if you forget to remove it in production
 INTERNAL_IPS = ['127.0.0.1']
