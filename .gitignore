@@ -8,4 +8,4 @@ media/
 *.pyc
 *.pot
 __pycache__/
-settings.py
+secret_key.txt

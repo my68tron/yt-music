@@ -1,4 +1,5 @@
 from youtube_dl import YoutubeDL
+import os
 
 class MyLogger(object):
     def debug(self, msg):
@@ -9,11 +10,13 @@ class MyLogger(object):
 
     def error(self, msg):
         print('error : ', msg)
-        raise Exception('ERROR!!! Invalid URL')
+        raise Exception('ERROR!!!')
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ydl_opts = {
     'format': 'bestaudio/best',
-    'outtmpl': '/media/%(title)s.%(ext)s',
+    'outtmpl': os.path.join(BASE_DIR, 'media') +'/%(title)s.%(ext)s',
     'postprocessors': [{
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'mp3',

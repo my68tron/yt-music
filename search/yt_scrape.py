@@ -20,8 +20,10 @@ def yt_scrape_bs(search_text ='lollipop onderkoffer'):
     r = requests.get(BASE_URL + SEARCH_RESULT_PAGE + search_text)
     soup = BeautifulSoup(r.content, 'html5lib')
 
-    # with open('url.txt', 'w', encoding='utf-8') as f_out:
-    #     f_out.write(soup.prettify())
+    import os
+    from django.conf import settings
+    with open(os.path.join(settings.MEDIA_ROOT, 'url.txt'), 'w', encoding='utf-8') as f_out:
+        f_out.write(soup.prettify())
 
     video_tiles = soup.findAll('div', attrs={'class':'yt-lockup yt-lockup-tile yt-lockup-video vve-check clearfix'})
     scraped_links = []
@@ -54,7 +56,7 @@ def yt_scrape_bs(search_text ='lollipop onderkoffer'):
         meta_info = content.find('ul', attrs={'class': 'yt-lockup-meta-info'})
         meta_info = meta_info.find_all('li')
         scraped_content['uploaded'] = meta_info[0].get_text()
-        scraped_content['views'] = meta_info[1].get_text()
+        scraped_content['views'] = meta_info[1].get_text() if len(meta_info > 1) else ' '
       
         scraped_links.append(scraped_content)
 
@@ -109,5 +111,5 @@ def yt_scrape_sel(search_text = 'lollipop onderkoffer'):
 if __name__ == "__main__":
     ##* Used for Selenium Scraping
     # print(yt_scrape_sel('dimitri vegas & like mike tomorrowland 2019'))
-    print(yt_scrape_bs('jah no partial'))
+    print(yt_scrape_bs('choppa dunks'))
     pass

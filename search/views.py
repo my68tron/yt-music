@@ -31,10 +31,16 @@ def download_url(request, url):
         # print(json.dumps(page_info, indent=4, sort_keys=True))
     
         file_name = page_info['title'] + '.mp3'
+        # For Linux Server
+        # file_name = file_name.replace(' ', '')
+        # file_name = file_name.translate(None, '()')
+
         file_path = os.path.join(settings.MEDIA_ROOT, file_name)
         if os.path.exists(file_path):
             response = FileResponse(open(file_path, 'rb'), as_attachment=True)
             return response
+        else:
+            raise Exception('File Path not correct')
     except Exception as e:
         flash_message = {
             'message': str(e),
