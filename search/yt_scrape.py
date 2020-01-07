@@ -20,10 +20,10 @@ def yt_scrape_bs(search_text ='lollipop onderkoffer'):
     r = requests.get(BASE_URL + SEARCH_RESULT_PAGE + query)
     soup = BeautifulSoup(r.content, 'html5lib')
 
-    import os
-    from django.conf import settings
-    with open(os.path.join(settings.MEDIA_ROOT, 'url.txt'), 'w', encoding='utf-8') as f_out:
-        f_out.write(soup.prettify())
+    # import os
+    # from django.conf import settings
+    # with open(os.path.join(settings.MEDIA_ROOT, 'webpage.txt'), 'w', encoding='utf-8') as f_out:
+    #     f_out.write(soup.prettify())
 
     video_tiles = soup.findAll('div', attrs={'class':'yt-lockup yt-lockup-tile yt-lockup-video vve-check clearfix'})
     scraped_links = []

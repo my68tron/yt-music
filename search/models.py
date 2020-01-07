@@ -8,10 +8,8 @@ class Song(models.Model):
     img_url = models.URLField(unique=True)
     channel_name = models.CharField(max_length=264)
     channel_url = models.URLField()
-    path = models.FilePathField(path=settings.MEDIA_DIR)
     uploaded = models.CharField(max_length=264)
     views = models.CharField(max_length=264)
-    download_count = models.PositiveIntegerField(default=0)
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

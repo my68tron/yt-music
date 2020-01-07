@@ -5,20 +5,21 @@
 
 <div class="card my-4">
     <h2 class="card-header">Search Results for '{{ search_input }}'</h2>
+    <a href="{% url 'search:index' %}?search={{ search_input }}&f=1" class="btn btn-primary">Live Search</a>
 </div>
 
 {% if search_results %}
     {% for entry in search_results %}
-        <div class="card my-4 result-card">
+        <div class="card result-card">
             <div class="card-horizontal">
                 <div class="img-square-wrapper">
-                    <a href="{% url 'download:download_url' entry.url|cut:'/watch?v=' %}">
+                    <a class="download-url" href="{% url 'download:download_url' entry.url|cut:'/watch?v=' %}" data-url="{{ entry.url }}">
                         <img class="" src="{{ entry.img_url }}" alt="{{ entry.name }}">
                     </a>
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">
-                        <a target="_blank" href="https://www.youtube.com{{ entry.link }}">{{ entry.name }}</a>
+                        <a target="_blank" href="https://www.youtube.com/watch?v={{ entry.url }}">{{ entry.name }}</a>
                     </h5>
                     <p class="card-text">
                         <a target="_blank" href="https://www.youtube.com{{ entry.channel_url }}">{{ entry.channel_name }}</a>

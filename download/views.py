@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse, FileResponse
 from download.yt_download import yt_download, yt_info
-from search.models import Search
+from search.models import Search, Song
+from download.models import DownloadedSong
 from django.conf import settings
 import os
 import json
@@ -26,14 +27,19 @@ def download_url(request, url):
             return response
         else:
             raise Exception('File Path not correct')
+        return HttpResponse("Success!")
     except Exception as e:
         flash_message = {
             'message': str(e),
             'css_type': 'danger'
         }
         context['flash_message'] = flash_message
+        response = HttpResponse(json.dumps({'flash_message': flash_message}), 
+            content_type='application/json')
+        response.status_code = 400
+        return response
     
-    return render(request, 'download/index.html', context=context)
+    # return render(request, 'download/index.html', context=context)
 
 # Download a media file using POST request
 def download_file(request):
@@ -47,11 +53,11 @@ def download_file(request):
 
 # Download Page to enter url
 def download_page(request):
-    search_list = Search.objects.all()
+    search_list = Search.objects.all()[:10]
     context = {'search_list': search_list}
 
-    if request.method == 'POST':
-        url = request.POST['download_url']
+    if request.method == 'GET' and 'download' in request.GET:
+        url = request.GET['download']
         context['download_url'] = url
         try:
             if yt_info(url):

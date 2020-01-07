@@ -1,7 +1,7 @@
 from youtube_dl import YoutubeDL
 import os
 
-class MyLogger(object):
+class YtLogger(object):
     def debug(self, msg):
         print('debug : ', msg)
 
@@ -22,7 +22,7 @@ ydl_opts = {
         'preferredcodec': 'mp3',
         'preferredquality': '192',
     }],
-    'logger': MyLogger(),
+    'logger': YtLogger(),
 }
 
 ydl = YoutubeDL(ydl_opts)
@@ -32,8 +32,6 @@ def yt_info(link:str):
     return page_info if page_info else False
 
 def yt_download(link:str, duration:int):
-    page_info = ydl.extract_info(link, download=False)
-
     if int(duration) >= 600:
         raise Exception("Videos more than 10 min long are not allowed to download")
 
@@ -41,5 +39,6 @@ def yt_download(link:str, duration:int):
     return True
 
 if __name__ == "__main__":
-    print(yt_download('YykjpeuMNEk'))
+    print(yt_info('YykjpeuMNEk'))
+    # print(yt_download('YykjpeuMNEk', 600))
     pass

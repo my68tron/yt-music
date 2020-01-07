@@ -7,13 +7,11 @@
 <div class="card my-4">
   <h4 class="card-header">Youtube Song Download</h4>
   <div class="card-body">
-    <form action="{% url 'download:download_page' %}" method='POST'>
-      
-      {% csrf_token %}
+    <form action="{% url 'download:download_page' %}" method='GET'>
 
       <div class="form-row align-items-center">
         <div class="col-md-10">
-          <input type="text" name="download_url" class="form-control mb-2" placeholder="Enter URL" value="{% firstof download_url %}" required autofocus>
+          <input type="text" name="download" class="form-control mb-2" placeholder="Enter URL" value="{% firstof download_url %}" required autofocus>
         </div>
         <div class="col-auto">
           <button type="submit" class="btn btn-primary mb-2">Download</button>

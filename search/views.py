@@ -8,65 +8,59 @@ import os
 import json
 
 # Store songs to database
-def storeSongs(links):
+def storeSongs(search_input):
+    scrape_result = yt_scrape_bs(search_input)
+
     song_ids = []
-    for link in links:
+    for link in scrape_result['scraped_links']:
         try:
-            song = Song.objects.get(url=link['url'])
-            song_ids.append(song.id)
+            song = Song.objects.get(url=link['url'].replace('/watch?v=', ''))
         except Song.DoesNotExist:
             song = Song.objects.create(
                 name=link['name'],
                 duration=link['duration'],
-                url=link['url'],
+                url=link['url'].replace('/watch?v=', ''),
                 img_url=link['img_url'],
                 channel_name=link['channel_name'],
                 channel_url=link['channel_url'],
                 uploaded=link['uploaded'],
                 views=link['views']
             )
+        finally:
             song_ids.append(song.id)
-    return song_ids
+    return (scrape_result['scraped_links'], scrape_result['search_input'], song_ids)
 
 # Display search results or display search page
 def index(request):
-    search_list = Search.objects.all()
+    search_list = Search.objects.all()[:10]
     context = {'search_list': search_list}
 
     if request.method == 'GET' and 'search' in request.GET:
-        search_input = request.GET['search']
-
-        scrape_result = yt_scrape_bs(search_input)
-        context['search_results'] = scrape_result['scraped_links']
-        context['search_input'] = scrape_result['search_input']
-
-        song_ids = storeSongs(scrape_result['scraped_links'])
+        context['search_input'] = search_input = request.GET['search']
+        
         try:
             search = Search.objects.get(title=search_input)
-            search.songs = ','.join(map(str, song_ids))
+            if 'f' in request.GET:
+                (context['search_results'], context['search_input'], song_ids) = storeSongs(search_input)
+                search.songs = ','.join(map(str, song_ids))
+                search.save()
+            else:
+                song_ids = list(map(int, search.songs.split(',')))
+                search_results = []
+                for song_id in song_ids:
+                    search_results.append(Song.objects.get(id=song_id))
+                context['search_results'] = search_results
         except Search.DoesNotExist:
+            (context['search_results'], context['search_input'], song_ids) = storeSongs(search_input)
             Search(title=context['search_input'], songs=','.join(map(str, song_ids))).save()
 
-        return render(request, 'search/results.html', context=context)
-    if request.method == 'GET' and 'query' in request.GET:
-        search_input = request.GET['query']
-        context['search_input'] = search_input
-        try:
-            search = Search.objects.get(title=search_input)
-            song_ids = list(map(int, search.songs.split(',')))
-            search_results = []
-            for song_id in song_ids:
-                search_results.append(Song.objects.get(id=song_id))
-            context['search_results'] = search_results
-        except Search.DoesNotExist:
-            return render(request, 'search/index.html', context=context)
         return render(request, 'search/results.html', context=context)
 
     return render(request, 'search/index.html', context=context)
 
 # Contact Us Page
 def contact(request):
-    search_list = Search.objects.all()
+    search_list = Search.objects.all()[:10]
     context = {'search_list': search_list}
 
     if request.method == 'POST':

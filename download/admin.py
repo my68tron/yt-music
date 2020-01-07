@@ -1,3 +1,4 @@
 from django.contrib import admin
+from download.models import DownloadedSong
 
-# Register your models here.
+admin.site.register(DownloadedSong)

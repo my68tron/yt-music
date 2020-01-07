@@ -9,7 +9,7 @@
   <meta name="description" content="Download Songs from Youtube as mp3">
   <meta name="author" content="my68tron">
 
-  <title>YT-Search</title>
+  <title>YT-Music</title>
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -18,7 +18,7 @@
   <link href="{% static 'css/styles.css' %}" rel="stylesheet">
 </head>
 
-<body class="bg-dark">
+<body>
 
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -105,7 +105,7 @@
           <div class="card-body">
             {% if search_list %}
               {% for entry in search_list %}
-              <a class="" href="{% url 'search:index' %}?query={{ entry.title }}">{{ entry.title }}</a>
+              <a class="" href="{% url 'search:index' %}?search={{ entry.title }}">{{ entry.title }}</a><br>
               {% endfor %}
             {% else %}
               <p>No PREVIOUS SEARCHES found</p>
