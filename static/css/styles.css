@@ -35,7 +35,7 @@ body {
 ul.errorlist {display:none;}
 
 .flash-message {
-    position: absolute;
+    position: fixed;
     margin: 0;
     bottom: 50px;
     left: 25px;

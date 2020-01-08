@@ -13,7 +13,7 @@
         <div class="card result-card">
             <div class="card-horizontal">
                 <div class="img-square-wrapper">
-                    <a class="download-url" href="{% url 'download:download_url' entry.url|cut:'/watch?v=' %}" data-url="{{ entry.url }}">
+                    <a class="download-url" href="{% url 'download:download_url' entry.url|cut:'/watch?v=' %}" data-url="{{ entry.id }}">
                         <img class="" src="{{ entry.img_url }}" alt="{{ entry.name }}">
                     </a>
                 </div>

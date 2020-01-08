@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, FileResponse, HttpResponseBadRequest
 from download.yt_download import yt_download, yt_info
 from search.models import Search, Song
 from download.models import DownloadedSong
@@ -8,49 +8,61 @@ import os
 import json
 
 # Download mp3 from url
-def download_url(request, url):
-    download_url = url if 'https://www.youtube.com/watch?v=' in url else 'https://www.youtube.com/watch?v=' + url
-    context = {'download_url': download_url}
+def download_url(request, id):
     try:
-        page_info = yt_info(download_url)
-        yt_download(url, int(page_info['duration']))
-        # print(json.dumps(page_info, indent=4, sort_keys=True))
-    
-        file_name = page_info['title'] + '.mp3'
-        # For Linux Server
-        # file_name = file_name.replace(' ', '_')
-        # file_name = file_name.translate(None, '()')
+        song = Song.objects.get(pk=int(id))
+        duration = song.duration
+        if ':' in duration:
+            duration = list(map(int, duration.split(':')))[::-1]
+            if len(duration) > 2:
+                duration = duration[0] + (60 * duration[1]) + (3600 * duration[2])
+            else:
+                duration = duration[0] + (60 * duration[1])
+        try:
+            downloadedSong = DownloadedSong.objects.get(pk=int(id))
+        except DownloadedSong.DoesNotExist:
+            yt_download(song.url, int(duration))
+            file_name = song.name + '.mp3'
+            # For Linux Server
+            # file_name = file_name.replace(' ', '_')
+            # file_name = file_name.translate(None, '()')
+            downloadedSong = DownloadedSong.objects.create(pk=int(id), song=song, path=file_name)
 
-        file_path = os.path.join(settings.MEDIA_ROOT, file_name)
-        if os.path.exists(file_path):
-            response = FileResponse(open(file_path, 'rb'), as_attachment=True)
-            return response
-        else:
-            raise Exception('File Path not correct')
         return HttpResponse("Success!")
-    except Exception as e:
+    except Song.DoesNotExist:
         flash_message = {
-            'message': str(e),
+            'message': 'Invalid Song Id',
             'css_type': 'danger'
         }
-        context['flash_message'] = flash_message
-        response = HttpResponse(json.dumps({'flash_message': flash_message}), 
+        response = HttpResponse(json.dumps({'error-message': flash_message}), 
             content_type='application/json')
         response.status_code = 400
         return response
-    
-    # return render(request, 'download/index.html', context=context)
+    return HttpResponseBadRequest('Bad Request')
 
 # Download a media file using POST request
 def download_file(request):
-    if request.method == 'POST':
-        title = request.POST['title']
-        file_name = title + '.mp3'
+    downloaded_songs = DownloadedSong.objects.all().order_by('-updated')
+    search_list = Search.objects.all()[:10]
+    context = {'search_list': search_list, 'downloaded_songs': downloaded_songs}
+
+    if request.method == 'GET' and 'id' in request.GET:
+        downloaded_song = DownloadedSong.objects.get(pk=request.GET['id'])
+        file_name = downloaded_song.song.name + '.mp3'
         file_path = os.path.join(settings.MEDIA_ROOT, file_name)
         if os.path.exists(file_path):
+            downloaded_song.download_count = downloaded_song.download_count + 1
+            downloaded_song.save()
             response = FileResponse(open(file_path, 'rb'), as_attachment=True)
             return response
+        else:
+            flash_message = {
+                'message': 'Song Does Not Exist!',
+                'css_type': 'danger'
+            }
+            context['flash_message'] = flash_message
 
+    return render(request, 'download/file.html', context=context)
 # Download Page to enter url
 def download_page(request):
     search_list = Search.objects.all()[:10]
@@ -60,11 +72,23 @@ def download_page(request):
         url = request.GET['download']
         context['download_url'] = url
         try:
-            if yt_info(url):
-                if 'https://www.youtube.com/watch?v=' in url:
-                    url = url.replace('https://www.youtube.com/watch?v=', '')
+            song_info = yt_info(url)
+            if song_info:
+                try:
+                    song = Song.objects.get(url=song_info['id'])
+                except Song.DoesNotExist:
+                    song = Song.objects.create(
+                        name=song_info['title'],
+                        duration=song_info['duration'],
+                        url=song_info['id'],
+                        img_url=song_info['thumbnail'],
+                        channel_name=song_info['uploader'],
+                        channel_url='/channel/' + song_info['channel_id'],
+                        uploaded=song_info['upload_date'],
+                        views=song_info['view_count']
+                    )
 
-                return redirect(reverse('download:download_url', kwargs={'url': url}), permanent=False)
+                return redirect(reverse('download:download_url', kwargs={'id': song.id}), permanent=False)
             else:
                 raise Exception('Incorrect URL')
         except Exception as e:
@@ -72,6 +96,9 @@ def download_page(request):
                 'message': str(e),
                 'css_type': 'danger'
             }
-            context['flash_message'] = flash_message
+            response = HttpResponse(json.dumps({'error-message': flash_message}), 
+                content_type='application/json')
+            response.status_code = 400
+            return response
 
     return render(request, 'download/index.html', context=context)

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block body_block %}  
+
+<div class="card my-4">
+    <h2 class="card-header">Downloads</h2>
+</div>
+
+{% if downloaded_songs %}
+    <table class="table table-stripped">
+        <thead>
+            <th>Name</th>
+            <th>Download</th>
+        </thead>
+        <tbody>
+            {% for downloaded_song in downloaded_songs %}
+                <tr>
+                    <td>{{ downloaded_song.path|cut:'.mp3' }}</td>
+                    <td><a href="{% url 'download:download_file' %}?id={{ downloaded_song.id }}">Download</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No song downloaded yet!</p>
+{% endif %}
+
+{% endblock body_block %}

@@ -13,7 +13,7 @@ Setup your virtual environment and install packages required
 Migrate models of each app
 
 ```python
-python manage.py makemigrations search
+python manage.py makemigrations search download
 python manage.py migrate
 ```
 

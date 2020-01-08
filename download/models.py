@@ -5,7 +5,7 @@ from search.models import Song
 class DownloadedSong(models.Model):
     """Model definition for DownloadedSong."""
 
-    song = models.OneToOneField(Song, on_delete=models.CASCADE, primary_key=True)
+    song = models.OneToOneField(Song, on_delete=models.CASCADE)
     path = models.FilePathField(path=settings.MEDIA_DIR, blank=True)
     download_count = models.PositiveIntegerField(default=0)
 
