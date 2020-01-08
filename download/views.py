@@ -48,7 +48,7 @@ def download_file(request):
 
     if request.method == 'GET' and 'id' in request.GET:
         downloaded_song = DownloadedSong.objects.get(pk=request.GET['id'])
-        file_name = downloaded_song.song.name + '.mp3'
+        file_name = downloaded_song.path
         file_path = os.path.join(settings.MEDIA_ROOT, file_name)
         if os.path.exists(file_path):
             downloaded_song.download_count = downloaded_song.download_count + 1
