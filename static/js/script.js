@@ -14,7 +14,6 @@ $('.download-url').click(function(e){
    e.preventDefault();
    if ($(".download-url-flash").length == 0) {
       $("body").append('<div class="flash-message download-url-flash alert alert-info alert-dismissable fade show" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close" aria-hidden="true">&times;</button>Processing Download...<br>Visit Archive Page to Download your Song</div>');
-      $("body").append('<div class="flash-message download-url-ready-flash alert alert-success alert-dismissable fade show" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close" aria-hidden="true">&times;</button>Download Ready<br>Visit Archive Page to Download your Song</div>');
    }
    sendDownloadFlashMessage("download-url-flash");
    var dataUrl = $(this).attr("data-url");
@@ -25,6 +24,9 @@ $('.download-url').click(function(e){
          url: dataUrl,
       },
       success: function( response, textStatus, xhr ) {
+         if ($(".download-url-ready-flash").length == 0) {
+            $("body").append('<div class="flash-message download-url-ready-flash alert alert-success alert-dismissable fade show" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close" aria-hidden="true">&times;</button>Download Ready<br>Visit Archive Page to Download your Song</div>');
+         }
          sendDownloadFlashMessage("download-url-ready-flash");
       },
       error: function( xhr, ajaxOptions, thrownError ){
@@ -38,9 +40,6 @@ $('.download-page-form').submit(function(event) {
    var submitButton = $(this).find("button[type='submit']");
    submitButton.prop('disabled',true);
    submitButton.text('Processing');
-   if ($(".download-url-ready-flash").length == 0) {
-      $("body").append('<div class="flash-message download-url-ready-flash alert alert-success alert-dismissable fade show" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close" aria-hidden="true">&times;</button>Download Ready<br>Visit Archive Page to Download your Song</div>');
-   }
    var formData = {
       'download': $('input[name=download]').val(),
    };
@@ -51,6 +50,9 @@ $('.download-page-form').submit(function(event) {
       // dataType    : 'json',
       encode      : true,
       success: function( response, textStatus, xhr ) {
+         if ($(".download-url-ready-flash").length == 0) {
+            $("body").append('<div class="flash-message download-url-ready-flash alert alert-success alert-dismissable fade show" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close" aria-hidden="true">&times;</button>Download Ready<br>Visit Archive Page to Download your Song</div>');
+         }
          sendDownloadFlashMessage("download-url-ready-flash");
       },
       error       : function( xhr, ajaxOptions, thrownError ){
