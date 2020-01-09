@@ -28,6 +28,8 @@ def download_url(request, id):
             file_name = song.name + '.mp3'
             # For Linux Server
             # file_name = file_name.replace(' ', '_')
+            # for c in "()[],&":
+            #     file_name = file_name.replace(c, '')
             # file_name = file_name.translate(None, '()')
             downloadedSong.path = file_name
             downloadedSong.save()
