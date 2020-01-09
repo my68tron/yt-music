@@ -29,7 +29,7 @@ def download_url(request, id):
             # For Linux Server
             # for c in "()[],&":
             #     file_name = file_name.replace(c, '')
-            # file_name = ''.join(file_name.split())
+            # file_name = '_'.join(file_name.split())
             # file_name = file_name.translate(None, '()')
             downloadedSong.path = file_name
             downloadedSong.save()
