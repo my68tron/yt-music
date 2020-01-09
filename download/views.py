@@ -20,13 +20,17 @@ def download_url(request, id):
                 duration = duration[0] + (60 * duration[1])
         try:
             downloadedSong = DownloadedSong.objects.get(pk=int(id))
+            if downloadedSong.path == '':
+                raise DownloadedSong.DoesNotExist()
         except DownloadedSong.DoesNotExist:
+            downloadedSong, created = DownloadedSong.objects.get_or_create(pk=int(id), song=song)
             yt_download(song.url, int(duration))
             file_name = song.name + '.mp3'
             # For Linux Server
             # file_name = file_name.replace(' ', '_')
             # file_name = file_name.translate(None, '()')
-            downloadedSong = DownloadedSong.objects.create(pk=int(id), song=song, path=file_name)
+            downloadedSong.path = file_name
+            downloadedSong.save()
 
         return HttpResponse("Success!")
     except Song.DoesNotExist:
@@ -47,7 +51,7 @@ def download_file(request):
     context = {'search_list': search_list, 'downloaded_songs': downloaded_songs}
 
     if request.method == 'GET' and 'id' in request.GET:
-        downloaded_song = DownloadedSong.objects.get(pk=request.GET['id'])
+        downloaded_song = DownloadedSong.objects.get(pk=int(request.GET['id']))
         file_name = downloaded_song.path
         file_path = os.path.join(settings.MEDIA_ROOT, file_name)
         if os.path.exists(file_path):
