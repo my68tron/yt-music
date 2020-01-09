@@ -38,7 +38,7 @@ $('.download-page-form').submit(function(event) {
    var submitButton = $(this).find("button[type='submit']");
    submitButton.prop('disabled',true);
    submitButton.text('Processing');
-   if ($(".download-url-flash").length == 0) {
+   if ($(".download-url-ready-flash").length == 0) {
       $("body").append('<div class="flash-message download-url-ready-flash alert alert-success alert-dismissable fade show" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close" aria-hidden="true">&times;</button>Download Ready<br>Visit Archive Page to Download your Song</div>');
    }
    var formData = {
