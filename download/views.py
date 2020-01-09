@@ -27,9 +27,9 @@ def download_url(request, id):
             yt_download(song.url, int(duration))
             file_name = song.name + '.mp3'
             # For Linux Server
-            # file_name = file_name.replace(' ', '_')
             # for c in "()[],&":
             #     file_name = file_name.replace(c, '')
+            # file_name = ''.join(file_name.split())
             # file_name = file_name.translate(None, '()')
             downloadedSong.path = file_name
             downloadedSong.save()
